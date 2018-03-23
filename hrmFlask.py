@@ -97,6 +97,7 @@ def postAvg():
 
         try:
                 email = r['user_email']
+                email = str(email)
                 timeSince = r['heart_rate_average_since']
 
         except:
