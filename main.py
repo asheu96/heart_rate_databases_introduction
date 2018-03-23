@@ -1,6 +1,5 @@
 from pymodm import connect
 import models
-import numpy
 import datetime
 
 def add_heart_rate(email, heart_rate, time):
@@ -21,17 +20,4 @@ def print_user(email):
     print(user.heart_rate)
     print(user.heart_rate_times)
 
-def hr_avg(email):
-    u = models.User.objects.raw({"_id": email}).first()
-    hrData = u.heart_rate
-    total = numpy.sum(hrData)
-    # sums the heart rate data
-    avgHR = double(total)/double(hrData)
-    # gets the average
-    return avgHR
 
-if __name__ == "__main__":
-    connect("mongodb://localhost:27017/heart_rate_app") # open up connection to db
-    create_user(email="suyash@suyashkumar.com", age=24, heart_rate=60) # we should only do this once, otherwise will overwrite existing user
-    add_heart_rate("suyash@suyashkumar.com", 60, datetime.datetime.now())
-    print_user("suyash@suyashkumar.com")
