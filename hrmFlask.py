@@ -38,9 +38,8 @@ def avgUserHR(email):
         """
         mail = "{0}".format(email)
         try:
-                u = models.User.objects.raw({'_id': mail}).first()
-                hrData = u.heart_rate
-                avgHR = numpy.mean(hrData)
+                user = models.User.objects.raw({"_id": email}).first()
+                avgHR = findAvg(user.heart_rate)
                 data = {"Avg Heart Rate": avgHR}
         except:
                 print('User does not exist')
@@ -90,15 +89,17 @@ def postHR():
 @app.route('/api/heart_rate/interval_average', methods=['POST'])
 def postAvg():
 
-        """ Function is a POST method that allows us to add heart_rate measurements to selected user. If user does not exist, creates the new user
+        """ Function is a POST method that allows us to post an email and a timeSince parameter. Calculates the average
+        heart rate since the given input time.
+        :returns: 
         """
 
         r = request.get_json()
 
         try:
                 email = r['user_email']
-                email = str(email)
                 timeSince = r['heart_rate_average_since']
+                
 
         except:
                 return 'Input fields are incorrect, double check before re-requesting', 400
@@ -112,9 +113,18 @@ def postAvg():
                 'Input time not of correct format', 400
 
         
+                      
         try:
-                u = models.User.objects.raw({'id': email}).first()
-                return 'success'
+                u = models.User.objects.raw({'_id': email}).first()
+                for count, elem in enumerate(u.heart_rate_times):
+                        if elem > timeStrip:
+                                break
+                # goes up until the last time that is less than the given time
+                avgHR = numpy.mean(u.heart_rate[count::])
+                tac = tachycardia(avgHR, u.age)
+                data = {"user_email": email, "heart_rate_average_since": timeSince, 'heart_rate_average': avgHR,'tachycardia': tac}
+                return jsonify(data), 200
+
         except:
-                return 'failed'
-        
+                return 'User not found', 404
+
