@@ -1,3 +1,5 @@
 pymodm
 flask
 numpy
+sphinx
+pytest
