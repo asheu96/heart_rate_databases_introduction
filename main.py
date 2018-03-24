@@ -40,9 +40,16 @@ def findAvg(heartrate):
     """ Function that takes in an heartrate list as the input and computes the average HR of the heart_rate measurements
     :param heartrate: User list of heartrates under question
     :returns: average value of the heartrate measurements
+    :raises TypeError: if given list of heartrates cannot be averaged (i.e. is not of the correct type)
     """
-    average = numpy.mean(heartrate)
-    return average
+
+    try:
+        average = numpy.mean(heartrate)
+        return average
+    except TypeError:
+        print('given heartrate list contains elements that cannot be averaged')
+        raise TypeError
+        return None
 
 
 def tachycardia(intervalAvg, age):
@@ -54,9 +61,20 @@ def tachycardia(intervalAvg, age):
     :param age: Age of the patient under question
     :returns: True if user is diagnosed with tachycardia
     :returns: False if user heart rate is in normal conditions
+    :returns: None if intervalAvg is not float type of if age is not int type
     """
+
+    if not isinstance(intervalAvg, float):
+        print('Input interval average is not of float type')
+        return None
+
+    if not isinstance(age, int):
+        print('Input age is not of int type')
+        return None
+
 
     if intervalAvg > 100 and age >= 21:
         return True
     else:
         return False
+
