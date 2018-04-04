@@ -1,10 +1,12 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 from pymodm import connect, MongoModel, fields
 from models import *
 from main import *
 import datetime, numpy
 
 app = Flask(__name__)
+CORS(app)
 connect("mongodb://vcm-3579.vm.duke.edu:27017/heart_rate_app")
 
 @app.route('/api/heart_rate/<email>', methods=['GET'])
@@ -23,6 +25,27 @@ def userHR(email):
         except:
                 print('User does not exist')
                 data = {"Heart Rate": 'User does not exist'}
+                return jsonify(data), 404
+
+        # if user tries to access a user that does not exist, returns a page that tells them the user doesn't exist
+        return jsonify(data), 200
+
+@app.route('/api/heart_rate_times/<email>', methods=['GET'])
+def userTimes(email):
+
+        """ Function is a GET request that allows us to access the heartrate of the requested email address if it exists
+        :param email: Email address of the person whose heart rate we want to obtain
+        :returns: jsonified data that contains the heart rate of user if user exists - else, tells user that specified user does not exist
+        """
+        
+        mail = "{0}".format(email)
+        try:
+                u = models.User.objects.raw({"_id": mail}).first()
+                data = {"Times": str(u.heart_rate_times)}                
+        
+        except:
+                print('User does not exist')
+                data = {"Times": 'User does not exist'}
                 return jsonify(data), 404
 
         # if user tries to access a user that does not exist, returns a page that tells them the user doesn't exist
