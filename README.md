@@ -19,5 +19,6 @@ to connect to the mongodb database from the flask server, include the following 
 
 ```py
 connect("mongodb://vcm-3579.vm.duke.edu:27017/heart_rate_app") # open up connection to db``
+```
 
 [![Build Status](https://travis-ci.org/asheu96/heart_rate_databases_introduction.svg?branch=master)](https://travis-ci.org/asheu96/heart_rate_databases_introduction)
